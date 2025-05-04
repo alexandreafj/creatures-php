@@ -52,9 +52,6 @@ class Database {
    */
   public function getPDO(): PDO {
     if($this->pdo === null) {
-      // If connect() was called in __construct and failed, an exception would
-      // have already been thrown. This check is mostly for robustness
-      // if the class were used differently.
       throw new \RuntimeException("Database connection was not successfully established.");
     }
     return $this->pdo;
