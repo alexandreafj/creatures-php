@@ -1,0 +1,33 @@
+# .gitignore for PHP Project
+
+# Core
+/vendor/
+/composer.lock
+
+# Environment
+/.env
+
+# Logs
+/storage/logs/*
+!/storage/logs/.gitignore # Keep the .gitignore to ensure the directory exists
+
+# Cache
+/bootstrap/cache/*
+
+# Sessions
+/storage/framework/sessions/*
+
+# Temporary files
+/tmp/
+*.log
+
+# IDE specific files
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
