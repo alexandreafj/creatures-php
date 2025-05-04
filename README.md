@@ -59,21 +59,19 @@ Before you begin, ensure you have the following installed on your system:
     # Open .env in your editor and adjust settings if necessary (e.g., database credentials, ports)
     ```
 
-3.  **Build and Start the Containers:**
+3.  **Install PHP Dependencies:**
+    You need to install your PHP dependencies using Composer. You'll run the `composer install` command.
+    ```bash
+    composer install
+    ```
+
+4.  **Build and Start the Containers:**
     This command will build the Docker images (if they don't exist) and start the defined services (Nginx, PHP-FPM, MySQL) in detached mode (`-d`).
     ```bash
     docker compose up -d --build
     ```
     * `--build`: This ensures that your images are built, which is important the first time you run it or if you make changes to the Dockerfile.
     * `-d`: Runs the containers in the background.
-
-4.  **Install PHP Dependencies:**
-    Once the containers are running, you need to install your PHP dependencies using Composer. You'll run the `composer install` command inside the PHP container.
-    First, identify the name of your PHP service container (it's likely `my_app_php` based on your example, but you can confirm with `docker compose ps`). Then execute:
-    ```bash
-    docker exec <php_container_name> composer install
-    ```
-    *Replace `<php_container_name>` with the actual name of your PHP service container (e.g., `docker exec my_app_php composer install`).*
 
 ### Accessing the Application
 
