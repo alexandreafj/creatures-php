@@ -260,4 +260,31 @@ class CreatureRepository
             throw new \Exception("Failed to delete creature: {$e->getMessage()}");
         }
     }
+
+    public function getById(int $id): array
+    {
+        $query = 'SELECT * FROM creatures WHERE id = :id';
+        try {
+            $bindings = [];
+            if ($id <= 0) {
+                throw new \InvalidArgumentException("Invalid creature id: {$id}");
+            }
+
+            $bindings[] = $id;
+            error_log("Preparing Creatures Query: " . $query);
+            error_log("Query Bindings: " . print_r($bindings, true));
+
+            $stmt = $this->db->pdo->prepare($query);
+            $stmt->execute($bindings);
+            return $stmt->fetch();
+        } catch (\PDOException $e) {
+            $debugInfo = [
+                'query_template' => $query ?? 'Query not built',
+                'bindings' => isset($bindings) ? print_r($bindings, true) : 'Bindings not set',
+                'error' => $e->getMessage()
+            ];
+            error_log("Failed to get creature by id: " . print_r($debugInfo, true));
+            throw new \Exception("Failed to get creature by id: {$e->getMessage()}");
+        }
+    }
 }
