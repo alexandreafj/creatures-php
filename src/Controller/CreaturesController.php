@@ -56,8 +56,8 @@ class CreaturesController
     $this->creatureRepository->update($id, $parsedBody);;
     $body = $response->getBody();
     $messageResponse = [ 'message' => 'Creature updated' ];
-    $body->write(json_encode($response));
-    return $response->withStatus(HttpStatusCodes::OK)->withHeader('Content-Type', 'application/json')->withBody($messageResponse);
+    $body->write(json_encode($messageResponse));
+    return $response->withStatus(HttpStatusCodes::OK)->withHeader('Content-Type', 'application/json')->withBody($body);
   }
 
   // public function deleteCreature(Request $request, Response $response): Response
