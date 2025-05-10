@@ -43,24 +43,49 @@ class CreaturesController
 
   public function createCreature(Request $request, Response $response): Response {
     $parsedBody = $request->getParsedBody();
+
     $this->creatureRepository->create($parsedBody);
+
     $creature = $this->creatureRepository->getLastById();
+
     $body = $response->getBody();
+
     $body->write(json_encode($creature));
-    return $response->withStatus(HttpStatusCodes::CREATED)->withHeader('Content-Type', 'application/json')->withBody($body);
+
+      return $response->withStatus(HttpStatusCodes::CREATED)->withHeader('Content-Type', 'application/json')->withBody($body);
   }
 
   public function updateCreature(Request $request, Response $response): Response {
     $parsedBody = $request->getParsedBody();
-    $id = $request->getAttribute('id');
-    $this->creatureRepository->update($id, $parsedBody);;
+
+      $id = $request->getAttribute('id');
+
+      $this->creatureRepository->update((int)$id, $parsedBody);;
+
     $body = $response->getBody();
-    $messageResponse = [ 'message' => 'Creature updated' ];
-    $body->write(json_encode($messageResponse));
-    return $response->withStatus(HttpStatusCodes::OK)->withHeader('Content-Type', 'application/json')->withBody($body);
+
+      $messageResponse = [ 'message' => 'Creature updated' ];
+
+      $body->write(json_encode($messageResponse));
+
+      return $response->withStatus(HttpStatusCodes::OK)->withHeader('Content-Type', 'application/json')->withBody($body);
   }
 
-  // public function deleteCreature(Request $request, Response $response): Response
+    public function deleteCreature(Request $request, Response $response): Response
+    {
+        $id = $request->getAttribute('id');
 
+        $this->creatureRepository->delete((int)$id);
 
+        return $response->withStatus(HttpStatusCodes::NO_CONTENT);
+    }
+
+    public function getCreatureById(Request $request, Response $response): Response
+    {
+        $id = $request->getAttribute('id');
+        $creature = $this->creatureRepository->getById($id);
+        $body = $response->getBody();
+        $body->write(json_encode($creature));
+        return $response->withStatus(HttpStatusCodes::OK)->withHeader('Content-Type', 'application/json')->withBody($body);
+    }
 }
