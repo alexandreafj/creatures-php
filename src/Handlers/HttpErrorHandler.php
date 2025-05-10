@@ -2,6 +2,7 @@
 
 namespace App\Handlers;
 
+use App\Util\HttpStatusCodes;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpException;
@@ -27,7 +28,7 @@ class HttpErrorHandler extends ErrorHandler
     protected function respond(): ResponseInterface
     {
         $exception = $this->exception;
-        $statusCode = 500;
+        $statusCode = HttpStatusCodes::INTERNAL_SERVER_ERROR;
         $type = self::SERVER_ERROR;
         $description = 'An internal error has occurred while processing your request.';
 
