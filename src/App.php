@@ -44,8 +44,8 @@ class App {
     self::$app->get('/api/creatures', [CreaturesController::class, 'listCreatures']);
     self::$app->post('/api/creatures', [CreaturesController::class, 'createCreature']);
     self::$app->put('/api/creatures/{id}', [CreaturesController::class, 'updateCreature']);
-    // $app->delete('/api/creatures/{id}', [CreaturesController::class, 'deleteCreature']);
-    // $app->get('/api/creatures/{id}', [CreaturesController::class, 'getCreatureById']);
+      self::$app->delete('/api/creatures/{id}', [CreaturesController::class, 'deleteCreature']);
+      self::$app->get('/api/creatures/{id}', [CreaturesController::class, 'getCreatureById']);
   }
 
   public function run(): void {
