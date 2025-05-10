@@ -16,9 +16,19 @@ class CreatureRepository
     }
 
     /**
-     * @param CreatureListParameterDto $params
-     * @return CreatureDTO[] Returns an array of CreatureDTOs. Empty if none found.
-     * @throws \Exception When database query fails
+     * Retrieves creatures from the database based on the provided filtering parameters.
+     *
+     * @param CreatureListParameterDto $params The filtering and pagination parameters for retrieving creatures.
+     * - search: A string to filter creatures by name (partial match).
+     * - habitat: The habitat to filter creatures by.
+     * - minDangerLevel: The minimum danger level to filter creatures.
+     * - type: The type of creatures to filter.
+     * - limit: The number of records to retrieve.
+     * - offset: The starting point for the records to retrieve.
+     *
+     * @return array An array of creatures with the retrieved fields: id, name, type, habitat, danger_level, and description.
+     *
+     * @throws \Exception If the query execution fails or an error occurs during data retrieval.
      */
     public function getCreatures(CreatureListParameterDto $params): array
     {
@@ -75,9 +85,9 @@ class CreatureRepository
     }
 
     /**
-     * @param array $body
+     * @param array $body The data for the creature to insert. Should include keys such as 'name', 'type', 'habitat', 'danger_level', and 'description'.
      * @return void
-     * @throws \Exception
+     * @throws \Exception When database insertion fails.
      */
     public function create(array $body): void
     {
@@ -134,6 +144,10 @@ class CreatureRepository
         }
     }
 
+    /**
+     * @return array Returns an associative array containing the last creature id. Empty if none found.
+     * @throws \Exception When database query fails
+     */
     public function getLastById(): array
     {
         $query = 'SELECT id FROM creatures ORDER BY id DESC LIMIT 1';
@@ -151,10 +165,14 @@ class CreatureRepository
     }
 
     /**
-     * @param int $id
-     * @param array $body
+     * Updates the details of a specific creature in the database.
+     *
+     * @param int $id The ID of the creature to update. Must be greater than 0.
+     * @param array $body An associative array containing the fields to update.
+     *                    Valid keys include 'name', 'type', 'habitat', and 'danger_level'.
      * @return void
-     * @throws \Exception
+     * @throws \InvalidArgumentException When the provided creature ID is invalid.
+     * @throws \Exception When database update operation fails.
      */
     public function update(int $id, array $body): void
     {
@@ -207,6 +225,39 @@ class CreatureRepository
             ];
             error_log("Failed to update creature: " . print_r($debugInfo, true));
             throw new \Exception("Failed to update creature: {$e->getMessage()}");
+        }
+    }
+
+    /**
+     * Deletes a creature by its ID.
+     *
+     * @param int $id The ID of the creature to delete. Must be greater than 0.
+     * @return void
+     * @throws \InvalidArgumentException If the provided ID is invalid (less than or equal to 0).
+     * @throws \Exception When the database query fails.
+     */
+    public function delete(int $id): void
+    {
+        $query = 'DELETE FROM creatures WHERE id = :id';
+        try {
+            $bindings = [];
+            if ($id <= 0) {
+                throw new \InvalidArgumentException("Invalid creature id: {$id}");
+            }
+
+            $bindings[] = $id;
+            error_log("Preparing Creatures Query: " . $query);
+
+            $stmt = $this->db->pdo->prepare($query);
+            $stmt->execute($bindings);
+        } catch (\PDOException $e) {
+            $debugInfo = [
+                'query_template' => $query ?? 'Query not built',
+                'bindings' => isset($bindings) ? print_r($bindings, true) : 'Bindings not set',
+                'error' => $e->getMessage()
+            ];
+            error_log("Failed to delete creature: " . print_r($debugInfo, true));
+            throw new \Exception("Failed to delete creature: {$e->getMessage()}");
         }
     }
 }
