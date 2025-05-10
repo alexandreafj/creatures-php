@@ -4,7 +4,6 @@ namespace Database;
 
 use PDO;
 use PDOException;
-use PDOStatement;
 
 class Database {
   private $charset = 'utf8mb4';
@@ -41,28 +40,6 @@ class Database {
       $this->pdo = new PDO($this->dsn, $user, $pass, $options);
     } catch (PDOException $e) {
       throw new \RuntimeException("Could not connect to the database. Please check your configuration.", 0, $e);
-    }
-  }
-
-  /**
-   * Get the PDO database connection instance.
-   *
-   * @return PDO
-   * @throws \RuntimeException if the connection is not established
-   */
-  public function getPDO(): PDO {
-    if($this->pdo === null) {
-      throw new \RuntimeException("Database connection was not successfully established.");
-    }
-    return $this->pdo;
-  }
-
-  public function select(string $query): bool | PDOStatement {
-    try {
-      return $this->pdo->query($query);
-    } catch (PDOException $e) {
-      error_log("". $e->getMessage());
-      throw new \RuntimeException("Error executing query: ".$query, 0, $e);
     }
   }
 }
