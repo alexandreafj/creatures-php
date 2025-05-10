@@ -6,15 +6,15 @@ use InvalidArgumentException;
 
 class CreatureListParameterDto
 {
-  public readonly int $page;
-  public readonly int $limit;
-  public readonly string $type; 
-  public readonly string $minDangerLevel;
-  public readonly string $search;
-  public readonly string $sortBy; 
-  public readonly string $sortOrder; 
+  public int $page;
+  public int $limit;
+  public string $type;
+  public string $minDangerLevel;
+  public string $search;
+  public string $sortBy;
+  public string $sortOrder;
   
-  public readonly int $offset;
+  public int $offset;
 
   private const ALLOWED_SORT_BY = [
     'name',
