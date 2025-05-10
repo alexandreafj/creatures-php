@@ -13,6 +13,9 @@ services:
       - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini:ro
     networks:
       - my_network
+    depends_on:
+      - db
+      - couchbase
 
   nginx:
     image: nginx:latest
@@ -45,8 +48,36 @@ services:
     networks:
       - my_network
 
+  couchbase:
+    image: couchbase:community-7.2.4
+    container_name: my_app_couchbase
+    restart: unless-stopped
+    ports:
+      # Couchbase Server Admin UI and REST API
+      - "8091:8091"
+      # Query Service (N1QL)
+      - "8093:8093"
+      # Search Service
+      - "8094:8094"
+      # Analytics Service
+      - "8095:8095"
+      # Eventing Service
+      - "8096:8096"
+      # Backup Service
+      - "8097:8097"
+      # Data Service (KV) - binary memcached protocol
+      - "11210:11210"
+      # Data Service (KV) - binary memcached protocol over SSL (if configured)
+      - "11207:11207" # Note: This is often used for SSL KV, but also for CAPI. Port 11211 is also common for internal SSL.
+      # For non-SSL client connections, 11210 is primary.
+    volumes:
+      - couchbasedata:/opt/couchbase/var # Persist Couchbase data, indexes, etc.
+    networks:
+      - my_network
+
 volumes:
   dbdata:
+  couchbasedata:
 
 networks:
   my_network:
