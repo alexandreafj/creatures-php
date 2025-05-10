@@ -9,18 +9,18 @@ use Slim\Factory\ServerRequestCreatorFactory;
 use App\Controller\CreaturesController;
 
 class App {
-  private static $app;
-  private static $callableResolver;
-  private static $responseFactory;
-  private static $serverRequestCreator;
-  private static $errorHandler;
-  private static $shutdownHandler;
-  private static $request;
+  private static $app = null;
+  private static $callableResolver = null;
+  private static $responseFactory = null;
+  private static $serverRequestCreator = null;
+  private static $errorHandler = null;
+  private static $shutdownHandler = null;
+  private static $request = null;
   public function __construct() {
     self::$app = AppFactory::create();  
   }
 
-  private function initErrorHandler() {
+  private function initErrorHandler(): void {
     self::$callableResolver = self::$app->getCallableResolver();
     self::$responseFactory = self::$app->getResponseFactory();
     self::$serverRequestCreator = ServerRequestCreatorFactory::create();
@@ -30,17 +30,17 @@ class App {
     register_shutdown_function(self::$shutdownHandler);
   }
 
-  private function initMiddlewares() {
+  private function initMiddlewares(): void {
     self::$app->addBodyParsingMiddleware();
     self::$app->addRoutingMiddleware();
   }
 
-  private function initErrorMiddleware() {
+  private function initErrorMiddleware(): void {
     $errorMiddleware = self::$app->addErrorMiddleware(true, false, false);
     $errorMiddleware->setDefaultErrorHandler(self::$errorHandler);
   }
 
-  private function initRoutes() {
+  private function initRoutes(): void {
     self::$app->get('/api/creatures', [CreaturesController::class, 'listCreatures']);
     self::$app->post('/api/creatures', [CreaturesController::class, 'createCreature']);
     self::$app->put('/api/creatures/{id}', [CreaturesController::class, 'updateCreature']);
@@ -48,7 +48,7 @@ class App {
     // $app->get('/api/creatures/{id}', [CreaturesController::class, 'getCreatureById']);
   }
 
-  public function run() {
+  public function run(): void {
     $this->initErrorHandler();
 
     $this->initMiddlewares();
@@ -57,6 +57,6 @@ class App {
 
     $this->initRoutes();
     
-    return self::$app->run();
+    self::$app->run();
   }
 }
